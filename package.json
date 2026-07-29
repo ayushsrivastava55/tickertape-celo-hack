@@ -1,0 +1,31 @@
+{
+  "name": "celo-chain-intel-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A paid MCP server: Celo chain-intelligence tools, metered per call over x402 stablecoin payments.",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "buyer": "tsx scripts/buyer.ts",
+    "typecheck": "tsc --noEmit",
+    "smoke": "tsx scripts/smoke.ts",
+    "verify-sig": "tsx scripts/verify-signature.ts"
+  },
+  "dependencies": {
+    "dotenv": "^17.0.0",
+    "express": "^5.1.0",
+    "viem": "^2.55.10",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
