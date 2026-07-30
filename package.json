@@ -13,7 +13,8 @@
     "smoke": "tsx scripts/smoke.ts",
     "verify-sig": "tsx scripts/verify-signature.ts",
     "new-wallets": "tsx scripts/new-wallets.ts",
-    "get-key": "tsx scripts/get-facilitator-key.ts"
+    "get-key": "tsx scripts/get-facilitator-key.ts",
+    "register-8004": "tsx scripts/register-8004.ts"
   },
   "dependencies": {
     "dotenv": "^17.0.0",
