@@ -12,6 +12,14 @@ import { getAddress, type Address } from "viem";
 export const FACILITATOR_URL =
   process.env.FACILITATOR_URL ?? "https://api.x402.celo.org";
 
+/**
+ * Required by the facilitator's /settle endpoint (not /verify). Issued by the
+ * x402.celo.org dashboard against a wallet signature; obtain one with
+ * `npm run get-key`. Settlement is prepaid: one credit per settlement at
+ * $0.001, with 500 free credits on mainnet signup.
+ */
+export const FACILITATOR_API_KEY = process.env.FACILITATOR_API_KEY ?? "";
+
 export const CELO_RPC_URL = process.env.CELO_RPC_URL ?? "https://forno.celo.org";
 
 export const PORT = Number(process.env.PORT ?? 3000);

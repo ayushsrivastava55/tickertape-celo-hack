@@ -1,4 +1,4 @@
-import { FACILITATOR_URL } from "../config.js";
+import { FACILITATOR_API_KEY, FACILITATOR_URL } from "../config.js";
 import type {
   PaymentPayload,
   PaymentRequirements,
@@ -9,7 +9,12 @@ import type {
 async function post<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(`${FACILITATOR_URL}${path}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      // /settle requires this; /verify does not. Undocumented in docs.celo.org —
+      // the key comes from the x402.celo.org dashboard (see scripts/get-facilitator-key.ts).
+      ...(FACILITATOR_API_KEY ? { "X-API-Key": FACILITATOR_API_KEY } : {}),
+    },
     body: JSON.stringify(body),
   });
 
@@ -25,6 +30,10 @@ async function post<T>(path: string, body: unknown): Promise<T> {
         `It must be the API host (https://api.x402.celo.org), not https://x402.celo.org. ` +
         `Body starts: ${text.slice(0, 120)}`,
     );
+  }
+
+  if (process.env.X402_DEBUG === "1") {
+    console.log(`[x402 debug] ${path} -> ${res.status} ${text.slice(0, 500)}`);
   }
 
   const json = JSON.parse(text) as T;

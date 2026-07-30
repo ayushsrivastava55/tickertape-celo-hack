@@ -52,6 +52,19 @@ export function paymentRequiredBody(
   };
 }
 
+const LOW_CREDIT_WARNING = 25;
+
+/**
+ * Most recent credit balance seen in a settle response. The facilitator exposes
+ * no endpoint to query this, so it is only observable as a side effect of
+ * settling.
+ */
+let lastKnownCredits: number | null = null;
+
+export function getLastKnownCredits(): number | null {
+  return lastKnownCredits;
+}
+
 export type GateResult =
   | { ok: false; body: PaymentRequiredBody }
   | {
@@ -63,7 +76,10 @@ export type GateResult =
        * Moves the funds on-chain. Call this only once the priced work has
        * succeeded, so a failing tool never bills the buyer.
        */
-      settle: () => Promise<{ transaction: string | null }>;
+      settle: () => Promise<{
+        transaction: string | null;
+        credits: number | null;
+      }>;
     };
 
 /**
@@ -117,7 +133,19 @@ export async function gate(
           `Settlement failed: ${result.errorReason ?? "unknown reason"}`,
         );
       }
-      return { transaction: result.transaction ?? null };
+      if (typeof result.credits === "number") {
+        lastKnownCredits = result.credits;
+        if (result.credits <= LOW_CREDIT_WARNING) {
+          console.warn(
+            `[x402] facilitator credits low: ${result.credits} left. ` +
+              `Settlements stop when this hits zero. Top up at https://x402.celo.org`,
+          );
+        }
+      }
+      return {
+        transaction: result.transaction ?? null,
+        credits: result.credits ?? null,
+      };
     },
   };
 }

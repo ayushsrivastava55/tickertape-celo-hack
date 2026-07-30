@@ -11,7 +11,9 @@
     "buyer": "tsx scripts/buyer.ts",
     "typecheck": "tsc --noEmit",
     "smoke": "tsx scripts/smoke.ts",
-    "verify-sig": "tsx scripts/verify-signature.ts"
+    "verify-sig": "tsx scripts/verify-signature.ts",
+    "new-wallets": "tsx scripts/new-wallets.ts",
+    "get-key": "tsx scripts/get-facilitator-key.ts"
   },
   "dependencies": {
     "dotenv": "^17.0.0",

@@ -62,6 +62,12 @@ export type SettleResponse = {
   transaction?: string | null;
   network?: string | null;
   payer?: string | null;
+  /**
+   * Prepaid credits left on the facilitator API key. One credit per settlement
+   * at $0.001. There is no GET endpoint for this, so the settle response is the
+   * only way to observe the balance.
+   */
+  credits?: number | null;
 };
 
 /** Body of a 402 response in v1 (requirements travel in the body). */

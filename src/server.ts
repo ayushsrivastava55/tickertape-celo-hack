@@ -1,6 +1,7 @@
 import express from "express";
 import {
   DEFAULT_TOKEN,
+  FACILITATOR_API_KEY,
   FACILITATOR_URL,
   PAY_TO,
   PORT,
@@ -18,7 +19,7 @@ import {
 } from "./mcp.js";
 import { TOOLS, TOOLS_BY_NAME } from "./tools/registry.js";
 import { getSupported } from "./x402/facilitator.js";
-import { buildRequirements, gate } from "./x402/gate.js";
+import { buildRequirements, gate, getLastKnownCredits } from "./x402/gate.js";
 
 const app = express();
 app.use(express.json({ limit: "256kb" }));
@@ -65,7 +66,15 @@ app.get("/", (_req, res) => {
 app.get("/health", async (_req, res) => {
   try {
     const supported = await getSupported();
-    res.json({ status: "ok", facilitator: FACILITATOR_URL, supported });
+    res.json({
+      status: "ok",
+      facilitator: FACILITATOR_URL,
+      apiKeyConfigured: Boolean(FACILITATOR_API_KEY),
+      // null until the first settlement of this process: the facilitator has no
+      // endpoint to query credits, it only reports them in settle responses.
+      creditsRemaining: getLastKnownCredits(),
+      supported,
+    });
   } catch (error) {
     res.status(503).json({
       status: "degraded",
